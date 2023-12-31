@@ -1,5 +1,10 @@
 这是一个使用FFmpeg对视频文件进行转封装，但不进行转码的小项目，可以实现mp4转flv、avi、wmv、mkv以及mov。
 
+Usage:
+  1. make
+  2. source ./profile.sh
+  3. ./main src.mp4 dst.avi
+
 项目中使用的函数的讲解见[FFmpeg库常用函数介绍-CSDN博客](https://blog.csdn.net/m0_51496461/article/details/135315126?spm=1001.2014.3001.5502)
 
 整个转封装的代码流程如下：
