@@ -1,0 +1,5 @@
+main
+!main/
+.git/
+.vscode/
+*.mp4
