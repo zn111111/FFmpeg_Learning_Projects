@@ -3,3 +3,4 @@ main
 .git/
 .vscode/
 *.mp4
+!Demux_Audio_Video/*.mp4
