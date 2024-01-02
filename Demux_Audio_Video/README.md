@@ -23,3 +23,12 @@
 ![img](file:///C:/Users/ZouNan/AppData/Local/Temp/msohtmlclip1/01/clip_image002.jpg)
 
 一些解码器可能不支持avcC的h264码流，则需要将avcC码流转换为annexB码流，只需要将宏定义H264_AnnexB的值由0改为1即可。
+
+## Usage
+
+```shell
+make
+source ./profile.sh
+./main before_conversion.mp4
+```
+
