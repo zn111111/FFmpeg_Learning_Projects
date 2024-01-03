@@ -20,7 +20,8 @@
 
 需要注意的是，代码中输出音视频的码流格式需要自己控制，需要确定原视频中音视频码流的具体格式，根据源码流格式对输出码流的格式进行对应修改。例如，输入视频是.mp4，里面包含.h264的视频码流和.aac的音频码流，则代码中输出文件名的后缀就需要是.h264和.aac。
 
-![image-20240103200425271](C:\Users\ZouNan\AppData\Roaming\Typora\typora-user-images\image-20240103200425271.png)
+![Uploading image.png…]()
+
 
 一些解码器可能不支持avcC的h264码流，则需要将avcC码流转换为annexB码流，只需要将宏定义H264_AnnexB的值由0改为1即可。
 
