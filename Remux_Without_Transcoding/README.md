@@ -1,10 +1,16 @@
 这是一个使用FFmpeg对视频文件进行转封装，但不进行转码的小项目，可以实现mp4转flv、avi、wmv、mkv以及mov。
 
+Usage:
+  1. make
+  2. source ./profile.sh
+  3. ./main src.mp4 dst.avi
+
 项目中使用的函数的讲解见[FFmpeg库常用函数介绍-CSDN博客](https://blog.csdn.net/m0_51496461/article/details/135315126?spm=1001.2014.3001.5502)
 
 整个转封装的代码流程如下：
 
-![img](file:///C:/Users/ZouNan/AppData/Local/Temp/msohtmlclip1/01/clip_image002.png)
+![视频转封装（无转码过程）流程图](https://github.com/zn111111/FFmpeg_Learning_Projects/assets/96569348/93cd29c3-1b8f-4291-805a-4e52952e49a6)
+
 
 首先是打开输入流，创建并初始化输入AVFormatContext；然后是寻找流的编解码信息；然后是创建并初始化输出AVFormatContext；然后遍历所有输入流，创建输出流并拷贝编解码器参数；由于不同封装格式码流格式不同，所以要将codec_tag设为0，这样ffmpeg会自动选择和封装格式匹配的码流格式。
 
