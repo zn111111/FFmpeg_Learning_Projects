@@ -29,11 +29,9 @@ make
 1) 初始化输入文件的AVFormatContext以及寻找流信息这些获取输入文件信息的一些操作。
 2) 遍历输入流，寻找音视频的解码器，创建解码器上下文，初始化解码器上下文的参数，打开解码器。
 
-![img](file:///C:/Users/ZouNan/AppData/Local/Temp/msohtmlclip1/01/clip_image002.png)
-
+![打开输入文件](https://github.com/zn111111/FFmpeg_Learning_Projects/assets/96569348/741a5710-fb43-44b1-a4c9-93509c95e5bf)
 在初始化解码器上下文AVCodecContext参数时，有一个需要注意的点。AVCodecParameters中没有pkt_timebase字段，因此AVCodecContext中的该字段只有默认值，需要找到输入流中对应的时间基给它赋值，以便后面创建buffer/abuffer滤镜器实例传递参数时使用。
-
-![img](file:///C:/Users/ZouNan/AppData/Local/Temp/msohtmlclip1/01/clip_image004.jpg)
+![clip_image004](https://github.com/zn111111/FFmpeg_Learning_Projects/assets/96569348/460f3312-fa0f-41d7-8d82-0d29b2c5760f)
 
 ## 4.2 打开输出文件
 
@@ -43,7 +41,7 @@ make
 2) 寻找音视频的编码器，创建编码器上下文，初始化编码器上下文的参数，打开编码器，将AVCodecContext的参数拷贝给AVCodecParameters。
 3) 打开输出文件，写入文件头。
 
-![img](file:///C:/Users/ZouNan/AppData/Local/Temp/msohtmlclip1/01/clip_image006.png)
+![打开输出文件](https://github.com/zn111111/FFmpeg_Learning_Projects/assets/96569348/048ea248-a3a0-4bc6-9d64-33b140fda585)
 
 在初始化编码器上下文AVCodecContext参数时，有几个需要注意的点：
 
@@ -64,7 +62,8 @@ enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 2) **对于音频**，创建anull滤镜（假滤镜）。创建abuffer滤镜和abuffersink滤镜。创建abuffer滤镜和abuffersink滤镜实例（创建abuffer滤镜时需要提供参数，参数包含音频的时间基、采样率、采样格式以及通道布局），并将其添加到滤镜图中去。设置abuffersink滤镜实例的参数sample_fmts、ch_layouts以及sample_rates。
 3) 创建并初始化buffer/abuffer和buffersink/abuffersink滤镜实例的引脚AVFilterInOut。解析字符串描述的滤镜图null/anull，并将其添加到现有的滤镜图中去。最后将滤镜图中的滤镜连接起来。
 
-![img](file:///C:/Users/ZouNan/AppData/Local/Temp/msohtmlclip1/01/clip_image008.png)
+![初始化滤镜](https://github.com/zn111111/FFmpeg_Learning_Projects/assets/96569348/045930ff-89c1-47e6-bcce-fbbec06bc79e)
+
 
 ## 4.4 转码
 
