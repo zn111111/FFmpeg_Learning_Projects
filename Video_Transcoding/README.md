@@ -2,7 +2,17 @@
 
 这是一个使用FFmpeg进行视频转码的小项目，为了简单起见，项目中的音视频的编码标准使用原编码标准。需要注意的是，由于不同音频编码标准对于一帧音频的样本数（nb_samples）不同，例如，AAC一般为1024，MP3一般为1152。因此，如果需要转换音频的编码标准，则需要进行重采样。
 
-# 2 项目中使用的FFmpeg函数介绍
+# 2 Usage
+
+```shell
+source ./profile.sh
+make
+./main input.mp4 output.mp4
+```
+
+
+
+# 3 项目中使用的FFmpeg函数介绍
 
 [FFmpeg库常用函数介绍（一）-CSDN博客](https://blog.csdn.net/m0_51496461/article/details/135315126?spm=1001.2014.3001.5502)
 
@@ -10,9 +20,9 @@
 
 [FFmpeg库常用函数介绍（三）-CSDN博客](https://blog.csdn.net/m0_51496461/article/details/135585321?spm=1001.2014.3001.5502)
 
-# 3 视频转码流程
+# 4 视频转码流程
 
-## 3.1 打开输入文件
+## 4.1 打开输入文件
 
 打开输入文件的主要任务如下：
 
@@ -25,7 +35,7 @@
 
 ![img](file:///C:/Users/ZouNan/AppData/Local/Temp/msohtmlclip1/01/clip_image004.jpg)
 
-## 3.2 打开输出文件
+## 4.2 打开输出文件
 
 打开输出文件的主要任务如下：
 
@@ -44,7 +54,7 @@ if (ofmt_ctx->oformat->flags & AVFMT_GLOBALHEADER)
 
 enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
-## 3.3 初始化滤镜
+## 4.3 初始化滤镜
 
 之所以需要滤镜是因为需要将解码后的视频帧的像素格式转换为输出格式支持的像素格式，以及将解码后的音频帧的采样格式转换为输出格式支持的采样格式，然后再进行编码。
 
@@ -56,7 +66,7 @@ enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 ![img](file:///C:/Users/ZouNan/AppData/Local/Temp/msohtmlclip1/01/clip_image008.png)
 
-## 3.4 转码
+## 4.4 转码
 
 转码的主要任务如下：
 
@@ -70,9 +80,9 @@ enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 在将编码后的帧写入输出文件时有一个需要注意的点。需要将以编码器时间基表示的时间戳pts、dts以及duration转换为以输出格式时间基表示。
 
-# 4 问题汇总
+# 5 问题汇总
 
-## 4.1 段错误
+## 5.1 段错误
 
 问题描述：调用avcodec_receive_packet函数接收编码后的音视频帧时，出现段错误。
 
@@ -80,7 +90,7 @@ enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 解决办法：对AVPacket结构体进行初始化。
 
-## 4.2 打开视频编码器失败
+## 5.2 打开视频编码器失败
 
 问题描述：调用avcodec_open2打开视频编码器失败。
 
@@ -90,7 +100,7 @@ enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 解决办法：调用av_guess_frame_rate对视频流的帧率进行设置。
 
-## 4.3 写入编码的帧到输出文件中失败
+## 5.3 写入编码的帧到输出文件中失败
 
 问题描述：调用av_interleaved_write_frame函数将编码后的音视频帧写入到输出文件中失败。
 
@@ -98,7 +108,7 @@ enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 解决办法：调用av_packet_rescale_ts函数，对编码后的音视频帧的时间戳进行转换。源时间基是编码器的时间基，宿时间基是输出格式里对应音频或者视频流的时间基。
 
-## 4.4 使用libx264进行编码时出现警告
+## 5.4 使用libx264进行编码时出现警告
 
 问题描述：使用libx264进行编码时出现警告，内容是强制的帧类型5被更改为帧类型3。
 
@@ -108,7 +118,7 @@ enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 解决办法：将AVFrame里的pict_type字段的值改为AV_PICTURE_TYPE_NONE。
 
-## 4.5 刷新编码器时，编码器里的编码的帧写入输出文件失败
+## 5.5 刷新编码器时，编码器里的编码的帧写入输出文件失败
 
 问题描述：刷新编码器时，编码器里有缓存的数据，将缓存的编码的帧写入输出文件时失败。
 
@@ -116,7 +126,7 @@ enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 解决办法：将源宿时间基修改为正确的值。
 
-## 4.6 转码后的视频文件只有一个视频流
+## 5.6 转码后的视频文件只有一个视频流
 
 问题描述：转码后的视频文件只有一个视频流，并且无法播放。
 
@@ -124,7 +134,7 @@ enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 解决办法：手动设置编码后的音视频帧的AVPacket里的stream_index。
 
-## 4.7 编码的帧写入输出文件时，报错时间戳不是单调递增的
+## 5.7 编码的帧写入输出文件时，报错时间戳不是单调递增的
 
 问题描述：将编码的音视频帧写入输出文件时报错，内容为提供的dts时间戳不是单调递增的。
 
@@ -134,7 +144,7 @@ enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 解决办法：手动设置编码后的音视频帧的AVPacket里的stream_index。
 
-## 4.8 转码后的视频文件，声音断断续续
+## 5.8 转码后的视频文件，声音断断续续
 
 问题描述：播放转码后的视频文件，声音断断续续不连贯。
 
@@ -142,7 +152,7 @@ enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 解决办法：使用正确的流索引获取正确的流的时间基。
 
-## 4.9 转码后的视频文件，画面卡住不动
+## 5.9 转码后的视频文件，画面卡住不动
 
 问题描述：播放转码后的视频文件，画面卡住不动，很久才会切换到下一个画面，并且视频时常变长了几百倍。
 
@@ -150,7 +160,7 @@ enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
 解决办法：应该将由buffersink滤镜器时间基表示的pts时间戳转换为由编码器表示的pts时间戳，然后再送入编码器进行编码。
 
-## 4.10 转码后的视频文件时长变长了近一半
+## 5.10 转码后的视频文件时长变长了近一半
 
 问题描述：视频转码完成后，时长变长了近一半，前面和原来的视频一样，也可以正常播放，后面多出来的没有内容。
 
